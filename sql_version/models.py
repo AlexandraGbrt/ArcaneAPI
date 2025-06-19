@@ -1,7 +1,10 @@
+# TABLES SQLALCHEMY
+
 from sqlalchemy import Column, Integer, String
 from database import Base
 
 # Classes python : Personnage, Relation, Lieu héritent de Base -> tables SQL avec colonnes
+
 class Personnage(Base):
     __tablename__ = "personnages"
 
@@ -9,7 +12,7 @@ class Personnage(Base):
     nom = Column(String, unique=True, index=True)
     alias = Column(String)
     affiliation = Column(String)
-    lieu_origine_id = Column(Integer)
+    # lieu_origine_id = Column(Integer)
 
 class Relation(Base):
     __tablename__ = "relations"
