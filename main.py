@@ -2,8 +2,9 @@ from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from typing import List
 from sqlalchemy.orm import Session
-from models import Personnage
+import models #fichier models.py avec les tables Personnage, Relation et Lieu
 from database import SessionLocal
+from schemas import Personnage  # modèle Pydantic
 
 app = FastAPI()
 
@@ -25,20 +26,23 @@ class Personnage(BaseModel):
     affiliation: str
 
 
-personnages = [
-    Personnage(id=1, nom="Powder", alias='Jinx', affiliation='Zaun', lieu_origine_id=1),
-    Personnage(id=2, nom="Violet", alias='Vi', affiliation='Zaun', lieu_origine_id=1),
-    Personnage(id=3, nom="Viktor", alias='Viktor', affiliation='Piltover', lieu_origine_id=3),
-    Personnage(id=4, nom="Vander", alias='Vander', affiliation='Zaun', lieu_origine_id=4),
-    Personnage(id=5, alias='Ekko', nom="Ekko", affiliation='Zaun', lieu_origine_id=6),
-    Personnage(id=6, alias='Mel', nom="Mel", affiliation='Piltover', lieu_origine_id=5),
-    Personnage(id=7, alias='Cupcake', nom="Caitlyn", affiliation='Piltover', lieu_origine_id=7),
-]
+# personnages = [
+#     Personnage(id=1, nom="Powder", alias='Jinx', affiliation='Zaun', lieu_origine_id=1),
+#     Personnage(id=2, nom="Violet", alias='Vi', affiliation='Zaun', lieu_origine_id=1),
+#     Personnage(id=3, nom="Viktor", alias='Viktor', affiliation='Piltover', lieu_origine_id=3),
+#     Personnage(id=4, nom="Vander", alias='Vander', affiliation='Zaun', lieu_origine_id=4),
+#     Personnage(id=5, alias='Ekko', nom="Ekko", affiliation='Zaun', lieu_origine_id=6),
+#     Personnage(id=6, alias='Mel', nom="Mel", affiliation='Piltover', lieu_origine_id=5),
+#     Personnage(id=7, alias='Cupcake', nom="Caitlyn", affiliation='Piltover', lieu_origine_id=7),
+# ]
 
 
-# @app.get("/personnages", response_model=List[Personnage])
-# async def get_personnages():
-#     return personnages
+@app.get("/personnages", response_model=List[Personnage])
+async def get_personnages(db: Session = Depends(get_db)): # crée et injecte une session de base de données à chaque requete
+    personnages = db.query(models.Personnage).all() # cherche tous les personnages de la table SQL
+    return personnages
+
+
 
 @app.get("/personnages")
 def get_personnages(affiliation: str | None = None):
@@ -50,6 +54,7 @@ def get_personnages(affiliation: str | None = None):
             if p.affiliation == affiliation:
                 personnages_filtres.append(p)
         return personnages_filtres
+
 
 
 @app.get("/personnages/{id}")

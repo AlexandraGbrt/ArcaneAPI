@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from database import Base
 
+# Classes python : Personnage, Relation, Lieu héritent de Base -> tables SQL avec colonnes
 class Personnage(Base):
     __tablename__ = "personnages"
 
