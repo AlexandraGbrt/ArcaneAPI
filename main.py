@@ -36,9 +36,9 @@ personnages = [
 ]
 
 
-@app.get("/personnages", response_model=List[Personnage])
-async def get_personnages():
-    return personnages
+# @app.get("/personnages", response_model=List[Personnage])
+# async def get_personnages():
+#     return personnages
 
 @app.get("/personnages")
 def get_personnages(affiliation: str | None = None):
