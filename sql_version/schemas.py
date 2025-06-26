@@ -12,7 +12,7 @@ class Personnage(PersonnageBase): # pour la lecture (GET)
     id: int
 
     class Config:
-        orm_mode = True # converti les objets SQLAlchemy en dicts pour FastAPI
+        from_attributes = True # converti les objets SQLAlchemy en dicts pour FastAPI
 
 
 
@@ -26,7 +26,7 @@ class Lieu(LieuBase): # pour la lecture (GET)
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 
@@ -40,5 +40,13 @@ class RelationBase(BaseModel):
     type_relation: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
+
+# class RelationName(BaseModel):
+#     perso_1_name: str
+#     perso_2_name: str
+#     type_relation: str
+
+#     class Config:
+#         from_attributes = True

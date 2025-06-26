@@ -1,14 +1,26 @@
 # uvicorn main_sql:app --reload      Lancer la version SQL
 
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from sqlalchemy.orm import Session
 import models #fichier models.py avec les tables Personnage, Relation et Lieu
 from database import SessionLocal
 from schemas import Personnage, PersonnageBase, RelationBase, Lieu, LieuBase  # modèle Pydantic
-
+from fastapi.staticfiles import StaticFiles # pour les images
 
 app = FastAPI()
+
+# Monte le dossier "images" pour être accessible via /images/nom.jpg
+app.mount("/images", StaticFiles(directory="images"), name="images")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # autorise React local
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dépendance pour obtenir la session de la base de données
 def get_db():
@@ -67,6 +79,18 @@ def get_relations(perso_id: int, db: Session = Depends(get_db)):
         if rel.perso_1_id == perso_id or rel.perso_2_id == perso_id: 
             relations_filtrees.append(rel)     
     return relations_filtrees
+
+
+
+# @app.get("/relations/{perso_name}", response_model=List[RelationName])
+# def get_relations_by_name(perso_name: str, db: Session = Depends(get_db)):
+#     relations = db.query(models.RelationByName).all()
+#     relations_filtrees = []
+#     for rel in relations:
+#         if rel.perso_1_name == perso_name or rel.perso_2_name == perso_name:
+#             relations_filtrees.append(rel)
+#     return relations_filtrees 
+
 
 
 
