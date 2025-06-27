@@ -1,7 +1,12 @@
 # INSERTION DES DONNÉES INITIALES
 
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
 from database import Base, engine, SessionLocal
-from models import Personnage, Relation, Lieu
+from models import Personnage, Relation, Lieu, Image
 
 
 # 1 - Crée physiquement les tables dans la base
@@ -19,6 +24,24 @@ personnages = [
     {"nom": "Ekko", "alias": "Ekko", "affiliation": "Zaun"},
     {"nom": "Mel", "alias": "Mel", "affiliation": "Piltover"},
     {"nom": "Caitlyn", "alias": "Cupcake", "affiliation": "Piltover"},
+]
+
+images = [
+    {"url": "images/bannerJinx.jpg", "personnage_name": "Powder"},
+    {"url": "images/jinx1.jpg", "personnage_name": "Powder"},
+    {"url": "images/bannerVi.jpg", "personnage_name": "Violet"},
+    {"url": "images/Vi1.jpg", "personnage_name": "Violet"},
+    {"url": "images/bannerViktor.webp", "personnage_name": "Viktor"},
+    {"url": "images/viktor1.jpg", "personnage_name": "Viktor"},
+    {"url": "images/bannerVander.webp", "personnage_name": "Vander"},
+
+    {"url": "images/bannerEkko.jpg", "personnage_name": "Ekko"},
+    {"url": "images/ekko2.jpg", "personnage_name": "Ekko"},
+
+    {"url": "images/bannerMel.jpg", "personnage_name": "Mel"},
+
+    {"url": "images/CaitlynBanner.jpg", "personnage_name": "Caitlyn"},
+    {"url": "images/caitlyn1.jpg", "personnage_name": "Caitlyn"},
 ]
 
 lieux = [
@@ -43,10 +66,20 @@ relations = [
     {"perso_1_id": 4, "perso_2_id": 5, "type_relation": "amis"},
 ]
 
-# 4 - Insère les personnages, lieux er relations
+# 4 - Insère les personnages, lieux et relations
 for perso_data in personnages:
     if not db.query(Personnage).filter_by(nom=perso_data["nom"]).first():
         db.add(Personnage(**perso_data))
+
+db.commit() 
+
+    # Insertion des images
+for image_data in images:
+    personnage = db.query(Personnage).filter_by(nom=image_data["personnage_name"]).first()
+    if personnage:  
+        image = Image(url=image_data["url"], personnage_id=personnage.id)
+        db.add(image)
+
 
 for lieu_data in lieux:
     if not db.query(Lieu).filter_by(nom=lieu_data["nom"]).first():
@@ -64,3 +97,4 @@ for rel_data in relations:
 # 5 - Sauvegarde et fermeture de session
 db.commit()
 db.close()
+print("Base de données initialisée avec succès.")

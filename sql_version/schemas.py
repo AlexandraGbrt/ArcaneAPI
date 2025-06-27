@@ -1,6 +1,16 @@
 # MODÈLES PYDANTIC : définie les formes de données que l'API attend ou envoie
 
 from pydantic import BaseModel
+from typing import List, Optional
+
+class Image(BaseModel):
+    url: str
+
+    class Config:
+        orm_mode = True 
+
+
+
 
 class PersonnageBase(BaseModel): # sans id pour la création (POST)
     nom: str
@@ -10,6 +20,7 @@ class PersonnageBase(BaseModel): # sans id pour la création (POST)
 
 class Personnage(PersonnageBase): # pour la lecture (GET)
     id: int
+    images: List[Image] = []
 
     class Config:
         from_attributes = True # converti les objets SQLAlchemy en dicts pour FastAPI

@@ -1,18 +1,18 @@
-# uvicorn main_sql:app --reload      Lancer la version SQL
+# uvicorn main_sql:app --reload        uvicorn sql_version.main_sql:app --reload      Lancer la version SQL
 
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from sqlalchemy.orm import Session
-import models #fichier models.py avec les tables Personnage, Relation et Lieu
-from database import SessionLocal
-from schemas import Personnage, PersonnageBase, RelationBase, Lieu, LieuBase  # modèle Pydantic
+from . import models #fichier models.py avec les tables Personnage, Relation et Lieu
+from .database import SessionLocal
+from .schemas import Personnage, PersonnageBase, RelationBase, Lieu, LieuBase  # modèle Pydantic
 from fastapi.staticfiles import StaticFiles # pour les images
 
 app = FastAPI()
 
 # Monte le dossier "images" pour être accessible via /images/nom.jpg
-app.mount("/images", StaticFiles(directory="images"), name="images")
+app.mount("/images", StaticFiles(directory="sql_version/images"), name="images")
 
 app.add_middleware(
     CORSMiddleware,

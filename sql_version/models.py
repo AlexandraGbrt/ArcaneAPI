@@ -13,7 +13,7 @@ class Personnage(Base):
     nom = Column(String, unique=True, index=True)
     alias = Column(String)
     affiliation = Column(String)
-    images = relationship("Image", back_populates="personnages", cascade="all, delete-orphan")
+    images = relationship("Image", back_populates="personnage", cascade="all, delete-orphan")
 
     # lieu_origine_id = Column(Integer)
 
